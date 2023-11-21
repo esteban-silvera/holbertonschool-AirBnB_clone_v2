@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -73,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is '}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -124,31 +125,38 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[args[0]]()
 
-        # process additional parameters
+        # process each attr assignment in the input
         for param in args[1:]:
-            try:
-                key, value = param.split('=')
-                # process string values:
-                # replace underscores with spaces and remove escaped quotes
-                if value[0] == "\"":
-                    value = (value.strip("\"").replace("_", " ")
-                             .replace("\\\"", "\""))
-                else:
-                    # attempt to convert to float or int
-                    value = self.convert_value(value)
-                setattr(new_instance, key, value)
-            except (ValueError, IndexError):
-                pass
+            # split attr into key and value
+            key, value_str = self.split_key_value(param)
+            # parse value and set attr if valid
+            if key and value_str:
+                value = self.parse_create_val(value_str)
+                if value is not None:
+                    setattr(new_instance, key, value)
+        # save new instance to the file storage
         new_instance.save()
         print(new_instance.id)
 
-    def convert_value(self, value):
-        """ Attempt to convert a string value to a numeric type """
+    def split_key_value(self, param):
+        """ Split parameter into key and value, returning a tuple """
+        parts = param.split('=', 1)
+        if len(parts) == 2:
+            return parts[0], parts[1]
+        return None, None
+
+    def parse_create_val(self, val_str):
+        """ Parse the value from string format to correct data type """
+        if val_str.startswith('"'):
+            # strip quotes, replace underscores with spaces and unescape quotes
+            return val_str.strip('"').replace('_', ' ').replace('\\\"', '"')
         try:
-            value = float(value)
-            return int(value) if value.is_integer() else value
+            # convert to float or int based on the presence of a decimal point
+            if '.' in val_str:
+                return float(val_str)
+            return int(val_str)
         except ValueError:
-            return value
+            return None
 
     def help_create(self):
         """ Help information for the create method """
@@ -296,7 +304,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -304,10 +312,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
