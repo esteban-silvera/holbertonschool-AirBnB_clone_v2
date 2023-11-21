@@ -2,7 +2,6 @@
 """ Console Module """
 import cmd
 import sys
-from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -134,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
                 value = self.parse_create_val(value_str)
                 if value is not None:
                     setattr(new_instance, key, value)
-        # save new instance to the file storage
+        # save new instance to the file storage and print its ID
         new_instance.save()
         print(new_instance.id)
 
@@ -147,6 +146,7 @@ class HBNBCommand(cmd.Cmd):
 
     def parse_create_val(self, val_str):
         """ Parse the value from string format to correct data type """
+        # check if value is a string
         if val_str.startswith('"'):
             # strip quotes, replace underscores with spaces and unescape quotes
             return val_str.strip('"').replace('_', ' ').replace('\\\"', '"')
