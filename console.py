@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,13 +118,37 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        args = args.split()
+        if args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        new_instance = HBNBCommand.classes[args[0]]()
+
+        # process additional parameters
+        for param in args[1:]:
+            try:
+                key, value = param.split('=')
+                # process string values:
+                # replace underscores with spaces and remove escaped quotes
+                if value[0] == "\"":
+                    value = (value.strip("\"").replace("_", " ")
+                             .replace("\\\"", "\""))
+                else:
+                    # attempt to convert to float or int
+                    value = self.convert_value(value)
+                setattr(new_instance, key, value)
+            except (ValueError, IndexError):
+                pass
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
+
+    def convert_value(self, value):
+        """ Attempt to convert a string value to a numeric type """
+        try:
+            value = float(value)
+            return int(value) if value.is_integer() else value
+        except ValueError:
+            return value
 
     def help_create(self):
         """ Help information for the create method """
@@ -297,6 +321,7 @@ class HBNBCommand(cmd.Cmd):
 
         # iterate through attr names and values
         for i, att_name in enumerate(args):
+
             # block only runs on even iterations
             if (i % 2 == 0):
                 att_val = args[i + 1]  # following item is value
@@ -319,6 +344,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
