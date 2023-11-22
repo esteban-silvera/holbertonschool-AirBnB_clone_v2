@@ -30,7 +30,7 @@ class BaseModel:
         else:
             # initialise with default values if no kwargs
             self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.now()
+            self.created_at = self.updated_at = datetime.utcnow()
             models.storage.new(self)
 
     def __str__(self):
@@ -40,14 +40,14 @@ class BaseModel:
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
-
+        
     def delete(self):
         """ Deletes the instance from storage """
         models.storage.delete(self)
-
+    
     def to_dict(self):
         """Convert instance into dict format"""
         dictionary = self.__dict__.copy()
