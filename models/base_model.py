@@ -6,6 +6,7 @@ import models
 import uuid
 from datetime import datetime
 
+
 Base = declarative_base()
 
 
@@ -29,8 +30,7 @@ class BaseModel:
         else:
             # initialise with default values if no kwargs
             self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.utcnow()
-            models.storage.new(self)
+            self.created_at = self.updated_at = datetime.now()
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -39,13 +39,9 @@ class BaseModel:
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now()
         models.storage.new(self)
         models.storage.save()
-
-    def delete(self):
-        """ Deletes the instance from storage """
-        models.storage.delete(self)
 
     def to_dict(self):
         """Convert instance into dict format"""
@@ -55,3 +51,7 @@ class BaseModel:
         dictionary['updated_at'] = dictionary['updated_at'].isoformat()
         dictionary.pop('_sa_instance_state', None)
         return dictionary
+
+    def delete(self):
+        """ Deletes the instance from storage """
+        models.storage.delete(self)
