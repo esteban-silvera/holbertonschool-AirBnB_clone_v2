@@ -6,9 +6,9 @@ from sqlalchemy.orm import relationship
 import os
 
 
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
    """Amenities of a place"""
-__tablename__ = "amenities"
-name = Column(String(128), nullable=False)
-place_amenities = relationship('place', secondary='place_amenity')
+   __tablename__ = "amenities"
+   name = Column(String(128), nullable=False)
+   #place_amenities = relationship('place', secondary='place_amenity')
  
