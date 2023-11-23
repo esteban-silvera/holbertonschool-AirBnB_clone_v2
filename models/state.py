@@ -9,14 +9,15 @@ storage_type = os.getenv('HBNB_TYPE_STORAGE')
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-    if storage_type == 'db': #for dbstorage
-        cities = relationship('City', backref='state',
-                          cascade='all, delete-orphan')
+    if storage_type == 'db':
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
+        if storage_type == 'db':  # for dbstorage
+            cities = relationship('City', backref='state',
+                                  cascade='all, delete-orphan')
     else:
         @property
-        def cities(self): 
+        def cities(self):
             """Getter attribute for cities in FileStorage"""
             city_list = []
             for city in models.storage.all("City").values():
