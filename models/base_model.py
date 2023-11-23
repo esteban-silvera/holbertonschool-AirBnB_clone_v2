@@ -6,7 +6,6 @@ import models
 import uuid
 from datetime import datetime
 
-
 Base = declarative_base()
 
 
@@ -43,11 +42,11 @@ class BaseModel:
         self.updated_at = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
-        
+
     def delete(self):
         """ Deletes the instance from storage """
         models.storage.delete(self)
-    
+
     def to_dict(self):
         """Convert instance into dict format"""
         dictionary = self.__dict__.copy()
@@ -56,5 +55,3 @@ class BaseModel:
         dictionary['updated_at'] = dictionary['updated_at'].isoformat()
         dictionary.pop('_sa_instance_state', None)
         return dictionary
-
-    
