@@ -3,6 +3,8 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+import os
+storage_type = os.getenv('HBNB_TYPE_STORAGE')
 
 
 class User(BaseModel, Base):
@@ -13,8 +15,15 @@ class User(BaseModel, Base):
     first_name = Column(String(128), nullable=False)
     last_name = Column(String(128), nullable=False)
 
-    places = relationship('Place', backref='user',
-                          cascade='all, delete-orphan')
+    if storage_type == 'db':
 
-    reviews = relationship('Review', backref='user',
-                           cascade='all, delete-orphan')
+        places = relationship('Place', backref='user',
+                              cascade='all, delete-orphan')
+
+        reviews = relationship('Review', backref='user',
+                               cascade='all, delete-orphan')
+    else:
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
