@@ -58,8 +58,8 @@ class Place(BaseModel, Base):
          #   list.append(v)
          #  return list
         
-      @amenities.setter
-      def amenities(self, v):
-        """setter for amenities"""
-        if type(value) is Amenity:
-          self.amenity_ids.append(value.id)
+     # @amenities.setter
+      # def amenities(self, v):
+       # """setter for amenities"""
+       # if type(value) is Amenity:
+        #  self.amenity_ids.append(value.id)
