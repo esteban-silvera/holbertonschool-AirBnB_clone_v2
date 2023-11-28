@@ -3,17 +3,14 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from models.review import Review
-from models.amenity import Amenity
 import os
 
 metadata = Base.metadata
-place_amenity = Table('place_amenity', Base.metadata,
-                      Column('place_id', String(60), ForeignKey('places.id'),
-                             primary_key=True, nullable=False),
-                      Column('amenity_id', String(60),
-                             ForeignKey('amenities.id'),
-                             primary_key=True, nullable=False))
+place_amenity = Table(
+    'place_amenity', metadata,
+    Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
+    Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
+)
 
 
 class Place(BaseModel, Base):
@@ -35,25 +32,26 @@ class Place(BaseModel, Base):
         reviews = relationship("Review", backref="place",
                                cascade="all, delete-orphan")
         amenities = relationship("Amenity", secondary=place_amenity,
-                                 back_populates="place_amenities",
-                                 viewonly=False)
+                                 back_populates="place_amenities")
     else:
+        amenity_ids = []
+
         @property  # For FileStorage
         def reviews(self):
             """Getter attribute for reviews in FileStorage"""
             from models import storage
-            return [review for review in storage.all(Review).values()
+            return [review for review in storage.all("Review").values()
                     if review.place_id == self.id]
 
         @property
         def amenities(self):
             """getter attr for amenity in Filestorage"""
             from models import storage
-            return [amenity for amenity in storage.all(Amenity).values()
+            return [amenity for amenity in storage.all("Amenity").values()
                     if amenity.id in self.amenity_ids]
 
         @amenities.setter
         def amenities(self, obj):
             """setter for amenities"""
-            if type(obj) is Amenity:
+            if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
