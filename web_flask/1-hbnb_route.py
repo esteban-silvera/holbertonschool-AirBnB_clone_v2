@@ -1,10 +1,9 @@
 #!/usr/bin/python3}
 """
-Task 0 flask web
+Task 1 flask web
 """
 
 from flask import Flask
-
 app = Flask(__name__)
 
 
@@ -13,6 +12,11 @@ app = Flask(__name__)
 def Hello_hbnb():
     """returns hello hbnh!"""
     return "Hello HBNB!"
+
+
+def hbnb():
+    """returns hbnb"""
+    return "HBNB"
 
 
 if __name__ == "__main__":
