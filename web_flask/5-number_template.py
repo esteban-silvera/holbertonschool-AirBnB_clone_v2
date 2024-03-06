@@ -4,6 +4,7 @@
 
 from flask import Flask, render_template
 
+
 app = Flask(__name__)
 
 
@@ -42,10 +43,9 @@ def number(n):
 def number_template(n):
     """coment"""
     if isinstance(n, int):
-        return render_template('5-number_template.html', n=n)
+        return render_template('number_template.html', n=n)
     else:
         return '', 404
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
