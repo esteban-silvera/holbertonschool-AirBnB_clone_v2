@@ -8,42 +8,47 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes=False)
-def hello():
-    """coment"""
-    return 'Hello HBNB!'
+@app.route("/", strict_slashes=False)
+def Hello_hbnb():
+    """cometns"""
+    return "Hello HBNB!"
 
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route("/hbnb", strict_slashes=False)
 def hbnb():
-    """coment"""
-    return 'HBNB'
+    """cometns"""
+    return "HBNB"
 
 
-@app.route('/c/<text>', strict_slashes=False)
-def c_text(text):
-    """coment"""
-    return 'C ' + text.replace('_', ' ')
+@app.route("/c/<text>", strict_slashes=False)
+def show_value(text):
+    """cometns"""
+    return f"C {text.replace('_',' ')}"
 
 
-@app.route('/python/', strict_slashes=False)
-@app.route('/python/<text>', strict_slashes=False)
-def python_text(text="is cool"):
-    """coment"""
-    return 'Python ' + text.replace('_', ' ')
+@app.route("/python/<text>", strict_slashes=False)
+def show_python_value(text="is_cool"):
+    """cometns"""
+    return f"Python {text.replace('_', ' ')}"
 
 
-@app.route('/number/<int:n>', strict_slashes=False)
-def number(n):
-    """coment"""
-    return '{} is a number'.format(n)
+@app.route("/python", strict_slashes=False)
+def show_default_value():
+    """cometns"""
+    return f"Python is cool"
 
 
-@app.route('/number_template/<int:n>', strict_slashes=False)
-def number_template(n):
-    """coment"""
-    return render_template(5-number.html, n=n)
+@app.route("/number/<int:n>", strict_slashes=False)
+def shows_num(n):
+    """cometns"""
+    return f"{n} is a number"
 
 
-if __name__ == '__main__':
+@app.route("/number_template/<int:n>", strict_slashes=False)
+def shows_html(n):
+    """cometns"""
+    return render_template("5-number.html", n=n)
+
+
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
