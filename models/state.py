@@ -16,7 +16,6 @@ class State(BaseModel, Base):
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
 
-
     if storage_type != 'db':
         @property
         def cities(self):
