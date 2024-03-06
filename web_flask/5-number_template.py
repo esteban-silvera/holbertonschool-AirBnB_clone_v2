@@ -43,7 +43,7 @@ def number(n):
 def number_template(n):
     """coment"""
     if isinstance(n, int):
-        return render_template('5_template.html', n=n)
+        return render_template('number_template.html', n=n)
     else:
         return '', 404
 
